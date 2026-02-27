@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { supabase } from '../supabase';
 
-// GIET Rajahmundry coordinates (approx: 17.07, 81.85)
-const GIET_LAT = 17.07;
-const GIET_LNG = 81.85;
+// GIET Rajahmundry coordinates based on Google Maps
+const GIET_LAT = 17.064957;
+const GIET_LNG = 81.865606;
 const MAX_DISTANCE_METERS = 200;
 
 // Haversine formula to calculate distance in meters

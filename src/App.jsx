@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Scanner from './components/Scanner';
 import Dashboard from './components/Dashboard';
-import { QrCode, LayoutDashboard } from 'lucide-react';
+import QRCodeGenerator from './components/QRCodeGenerator';
+import { QrCode, LayoutDashboard, Ticket } from 'lucide-react';
 
 const MainLayout = ({ children }) => {
   const location = useLocation();
@@ -26,18 +27,28 @@ const MainLayout = ({ children }) => {
               <Link
                 to="/"
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${location.pathname === '/'
-                    ? 'bg-primary text-white shadow-md'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-primary text-white shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
                   }`}
               >
                 <QrCode className="w-4 h-4" />
                 Scanner
               </Link>
               <Link
+                to="/generate"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${location.pathname === '/generate'
+                    ? 'bg-secondary text-white shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+              >
+                <Ticket className="w-4 h-4" />
+                Generator
+              </Link>
+              <Link
                 to="/dashboard"
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${location.pathname === '/dashboard'
-                    ? 'bg-primary text-white shadow-md'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-primary text-white shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
                   }`}
               >
                 <LayoutDashboard className="w-4 h-4" />
@@ -67,6 +78,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Scanner />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/generate" element={<QRCodeGenerator />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>
