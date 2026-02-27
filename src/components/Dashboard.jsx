@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
-import { Clock, Users, AlertTriangle } from 'lucide-react';
+import { Clock, Users, AlertTriangle, BookOpen } from 'lucide-react';
 
 const Dashboard = () => {
     const [attendanceRecords, setAttendanceRecords] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // 1. Fetch initial data
         const fetchInitialData = async () => {
             const { data, error } = await supabase
                 .from('attendance')
@@ -23,7 +22,6 @@ const Dashboard = () => {
 
         fetchInitialData();
 
-        // 2. Setup Realtime Subscription
         const channel = supabase.channel('schema-db-changes')
             .on(
                 'postgres_changes',
@@ -51,12 +49,12 @@ const Dashboard = () => {
         <div className="max-w-7xl mx-auto p-6 space-y-8">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-4xl font-extrabold text-white tracking-tight">Today's Attendance</h1>
-                    <p className="text-slate-400 mt-2 text-lg">Real-time live view of student entries.</p>
+                    <h1 className="text-4xl font-extrabold text-white tracking-tight">Gate Attendance Dashboard</h1>
+                    <p className="text-slate-400 mt-2 text-lg">Live monitoring of student arrivals.</p>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 shadow-inner">
                     <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.8)]"></div>
-                    <span className="text-sm font-bold tracking-wide">Live Server Timestamping Active</span>
+                    <span className="text-sm font-bold tracking-wide">Live Server Feed</span>
                 </div>
             </div>
 
@@ -92,15 +90,16 @@ const Dashboard = () => {
                 <div className="p-6 border-b border-white/10 bg-white/5 flex justify-between items-center">
                     <h2 className="text-xl font-bold flex items-center gap-3">
                         <Clock className="w-6 h-6 text-primary" />
-                        Recent Scans
+                        Arrival Log
                     </h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-white/10 text-slate-400 text-sm tracking-wider uppercase bg-slate-900/50">
-                                <th className="px-6 py-5 font-bold">Student ID</th>
-                                <th className="px-6 py-5 font-bold">Arrival Time (Server)</th>
+                                <th className="px-6 py-5 font-bold">PIN Number</th>
+                                <th className="px-6 py-5 font-bold">Branch</th>
+                                <th className="px-6 py-5 font-bold">Time (IST)</th>
                                 <th className="px-6 py-5 font-bold">Status</th>
                                 <th className="px-6 py-5 font-bold text-right">Delay</th>
                             </tr>
@@ -108,7 +107,7 @@ const Dashboard = () => {
                         <tbody className="divide-y divide-white/5">
                             {loading ? (
                                 <tr>
-                                    <td colSpan="4" className="text-center p-12 text-slate-400">
+                                    <td colSpan="5" className="text-center p-12 text-slate-400">
                                         <div className="flex justify-center items-center gap-3">
                                             <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
                                             Loading records...
@@ -117,10 +116,9 @@ const Dashboard = () => {
                                 </tr>
                             ) : attendanceRecords.length === 0 ? (
                                 <tr>
-                                    <td colSpan="4" className="text-center p-16 text-slate-500">
+                                    <td colSpan="5" className="text-center p-16 text-slate-500">
                                         <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
                                         <p className="text-xl font-medium mb-2">No entries yet today.</p>
-                                        <p className="text-sm">Waiting for students to scan in...</p>
                                     </td>
                                 </tr>
                             ) : (
@@ -128,16 +126,22 @@ const Dashboard = () => {
                                     <tr key={record.id} className="hover:bg-white/5 transition-colors group animate-[fadeIn_0.5s_ease-out]">
                                         <td className="px-6 py-5">
                                             <span className="font-mono text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 font-medium">
-                                                {record.student_id ? record.student_id : 'Unknown'}
+                                                {record.pin_number}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-5">
+                                            <span className="inline-flex items-center gap-2 text-slate-300 font-semibold px-2 py-1 bg-slate-800 rounded-md text-sm">
+                                                <BookOpen className="w-4 h-4 text-primary" />
+                                                {record.branch}
                                             </span>
                                         </td>
                                         <td className="px-6 py-5 text-slate-300 font-medium">
-                                            {new Date(record.arrival_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                                            {new Date(record.arrival_time).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                                         </td>
                                         <td className="px-6 py-5">
                                             <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${record.status === 'Late'
-                                                    ? 'bg-red-500/20 text-red-400 border border-red-500/30'
-                                                    : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                                ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                                                : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                                                 }`}>
                                                 {record.status}
                                             </span>

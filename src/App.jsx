@@ -1,22 +1,22 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import Scanner from './components/Scanner';
-import Dashboard from './components/Dashboard';
-import QRCodeGenerator from './components/QRCodeGenerator';
-import { QrCode, LayoutDashboard, Ticket } from 'lucide-react';
+import StudentAttendanceForm from './components/StudentAttendanceForm';
+import StudentPortal from './components/StudentPortal';
+import AdminPortal from './components/AdminPortal';
+import { UserCheck, History, ShieldCheck } from 'lucide-react';
 
 const MainLayout = ({ children }) => {
   const location = useLocation();
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
+      {/* Navbar - Public Section */}
       <nav className="glass border-b border-slate-800 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
-                <QrCode className="text-white w-6 h-6" />
+                <UserCheck className="text-white w-6 h-6" />
               </div>
               <div>
                 <span className="text-xl font-black tracking-tight text-white block">GIET <span className="text-primary">GatePass</span></span>
@@ -27,34 +27,33 @@ const MainLayout = ({ children }) => {
               <Link
                 to="/"
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${location.pathname === '/'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                  }`}
-              >
-                <QrCode className="w-4 h-4" />
-                Scanner
-              </Link>
-              <Link
-                to="/generate"
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${location.pathname === '/generate'
-                    ? 'bg-secondary text-white shadow-md'
+                    ? 'bg-primary text-white shadow-md'
                     : 'text-slate-400 hover:text-white hover:bg-slate-800'
                   }`}
               >
-                <Ticket className="w-4 h-4" />
-                Generator
+                <UserCheck className="w-4 h-4" />
+                Attendance Form
               </Link>
               <Link
-                to="/dashboard"
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${location.pathname === '/dashboard'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                to="/portal"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${location.pathname === '/portal'
+                    ? 'bg-primary text-white shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
                   }`}
               >
-                <LayoutDashboard className="w-4 h-4" />
-                Dashboard
+                <History className="w-4 h-4" />
+                Student Portal
               </Link>
             </div>
+
+            {/* Hidden Admin Entry Link */}
+            <Link
+              to="/admin"
+              className="text-slate-800 hover:text-slate-600 transition-colors"
+              title="Admin Access"
+            >
+              <ShieldCheck className="w-5 h-5" />
+            </Link>
           </div>
         </div>
       </nav>
@@ -76,9 +75,9 @@ function App() {
     <BrowserRouter>
       <MainLayout>
         <Routes>
-          <Route path="/" element={<Scanner />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/generate" element={<QRCodeGenerator />} />
+          <Route path="/" element={<StudentAttendanceForm />} />
+          <Route path="/portal" element={<StudentPortal />} />
+          <Route path="/admin" element={<AdminPortal />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>
