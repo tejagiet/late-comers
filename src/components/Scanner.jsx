@@ -39,9 +39,8 @@ const Scanner = () => {
                     <Camera className="w-8 h-8 text-primary" />
                     Scan Entry Pass
                 </h2>
-                <p className="text-slate-400 mb-8 flex items-center justify-center gap-1 text-sm">
-                    <MapPin className="w-4 h-4" />
-                    Requires GIET Campus Geolocation (200m)
+                <p className="text-slate-400 mb-8 text-sm">
+                    Position the QR code within the frame to scan.
                 </p>
 
                 {!successData && !scanError && (
@@ -49,7 +48,7 @@ const Scanner = () => {
                         {loading ? (
                             <div className="flex flex-col items-center justify-center p-6 animate-pulse">
                                 <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-                                <p className="text-xl font-medium text-white">Verifying Location & Server Time...</p>
+                                <p className="text-xl font-medium text-white">Verifying Server Time...</p>
                             </div>
                         ) : (
                             <BarcodeScannerComponent
