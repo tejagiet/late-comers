@@ -27,8 +27,8 @@ const MainLayout = ({ children }) => {
               <Link
                 to="/"
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${location.pathname === '/'
-                    ? 'bg-primary text-white shadow-md'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-primary text-white shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
                   }`}
               >
                 <UserCheck className="w-4 h-4" />
@@ -37,8 +37,8 @@ const MainLayout = ({ children }) => {
               <Link
                 to="/portal"
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${location.pathname === '/portal'
-                    ? 'bg-primary text-white shadow-md'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-primary text-white shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
                   }`}
               >
                 <History className="w-4 h-4" />
@@ -66,6 +66,11 @@ const MainLayout = ({ children }) => {
 
         {children}
       </main>
+
+      {/* Footer */}
+      <footer className="w-full py-4 text-center text-slate-500 text-sm font-medium border-t border-slate-800 bg-slate-900/50 backdrop-blur-sm z-50">
+        Developed by Teja, GIET Polytechnic College
+      </footer>
     </div>
   );
 };

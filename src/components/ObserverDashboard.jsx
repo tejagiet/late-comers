@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 import { Clock, Users, AlertTriangle, BookOpen } from 'lucide-react';
 
-const Dashboard = () => {
+const ObserverDashboard = () => {
     const [attendanceRecords, setAttendanceRecords] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -164,4 +164,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default ObserverDashboard;

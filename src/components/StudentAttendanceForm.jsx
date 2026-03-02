@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useAttendance } from '../hooks/useAttendance';
 import { User, BookOpen, AlertCircle, CheckCircle2, Send, Home } from 'lucide-react';
 
+import { syncAttendanceToSheet } from '../utils/googleSheets';
+
 const StudentAttendanceForm = () => {
     const { markAttendance, loading, error: hookError } = useAttendance();
     const [pinNumber, setPinNumber] = useState('');
@@ -22,6 +24,14 @@ const StudentAttendanceForm = () => {
                 setCustomError(data.message);
             } else {
                 setSuccessData(data);
+                // Sync to Google Sheets in the background
+                syncAttendanceToSheet({
+                    pin_number: pinNumber,
+                    branch: branch,
+                    status: data.status,
+                    delay_minutes: data.delay_minutes,
+                    arrival_time: data.arrival_time
+                });
             }
         } catch (err) {
             console.error("Submission error:", err);
@@ -51,16 +61,28 @@ const StudentAttendanceForm = () => {
 
                 {customError ? (
                     <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-8 animate-[zoomIn_0.3s_ease-out] space-y-6">
-                        <Home className="w-20 h-20 text-red-500 mx-auto mb-4" />
-                        <h3 className="text-4xl font-black text-white uppercase tracking-tighter">{customError}</h3>
-                        <p className="text-slate-400 text-sm">
-                            You have been late too many times. Access is restricted for today according to college policy.
-                        </p>
+                        {customError === 'Get back to home' ? (
+                            <>
+                                <Home className="w-20 h-20 text-red-500 mx-auto mb-4" />
+                                <h3 className="text-4xl font-black text-white uppercase tracking-tighter">{customError}</h3>
+                                <p className="text-slate-400 text-sm">
+                                    You have been late too many times. Access is restricted for today according to college policy.
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <AlertCircle className="w-20 h-20 text-blue-500 mx-auto mb-4" />
+                                <h3 className="text-2xl font-black text-white uppercase tracking-tighter">{customError}</h3>
+                                <p className="text-slate-400 text-sm">
+                                    Our records show you have already logged your arrival for today.
+                                </p>
+                            </>
+                        )}
                         <button
                             onClick={resetForm}
-                            className="w-full py-4 px-4 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-red-500/20 active:scale-95 text-lg"
+                            className={`w-full py-4 px-4 ${customError === 'Get back to home' ? 'bg-red-600 hover:bg-red-500' : 'bg-slate-700 hover:bg-slate-600'} text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 text-lg`}
                         >
-                            Understand
+                            {customError === 'Get back to home' ? 'Understand' : 'Close'}
                         </button>
                     </div>
                 ) : !successData ? (
@@ -94,12 +116,13 @@ const StudentAttendanceForm = () => {
                                 className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none"
                             >
                                 <option value="" disabled className="bg-slate-950">Select Your Branch</option>
-                                <option value="CSE" className="bg-slate-950">CSE</option>
+                                <option value="CME" className="bg-slate-950">CME</option>
                                 <option value="ECE" className="bg-slate-950">ECE</option>
                                 <option value="EEE" className="bg-slate-950">EEE</option>
-                                <option value="MECH" className="bg-slate-950">MECH</option>
+                                <option value="AI" className="bg-slate-950">AI</option>
                                 <option value="CIVIL" className="bg-slate-950">CIVIL</option>
-                                <option value="IT" className="bg-slate-950">IT</option>
+                                <option value="MECH" className="bg-slate-950">MECH</option>
+                                <option value="AUTO MOBILE" className="bg-slate-950">AUTO MOBILE</option>
                             </select>
                         </div>
 
@@ -114,8 +137,8 @@ const StudentAttendanceForm = () => {
                             type="submit"
                             disabled={loading || !pinNumber || !branch}
                             className={`w-full py-4 px-4 flex items-center justify-center gap-2 font-bold rounded-xl transition-all shadow-lg text-lg ${loading || !pinNumber || !branch
-                                    ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                                    : 'bg-primary hover:bg-primary/80 text-white shadow-primary/20 active:scale-95'
+                                ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                                : 'bg-primary hover:bg-primary/80 text-white shadow-primary/20 active:scale-95'
                                 }`}
                         >
                             {loading ? (

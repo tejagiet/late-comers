@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Dashboard from './Dashboard';
+import ObserverDashboard from './ObserverDashboard';
 import QRCodeGenerator from './QRCodeGenerator';
 import { Lock, LayoutDashboard, Ticket, LogOut, ShieldCheck, AlertCircle } from 'lucide-react';
 
@@ -110,7 +110,7 @@ const AdminPortal = () => {
             </div>
 
             <div className="py-8">
-                {activeTab === 'dashboard' ? <Dashboard /> : <QRCodeGenerator />}
+                {activeTab === 'dashboard' ? <ObserverDashboard /> : <QRCodeGenerator />}
             </div>
         </div>
     );

@@ -35,7 +35,21 @@ DECLARE
     v_status TEXT := 'On-Time';
     
     v_late_strikes INT := 0;
+    v_already_marked INT := 0;
 BEGIN
+    -- Check if attendance was already marked today (Asia/Kolkata date)
+    SELECT COUNT(*) INTO v_already_marked
+    FROM public.attendance
+    WHERE pin_number = p_pin_number 
+    AND (arrival_time AT TIME ZONE 'Asia/Kolkata')::DATE = (v_now AT TIME ZONE 'Asia/Kolkata')::DATE;
+
+    IF v_already_marked > 0 THEN
+        RETURN json_build_object(
+            'success', false, 
+            'message', 'Attendance already marked for today'
+        );
+    END IF;
+
     -- Calculate current status & delay
     IF v_current_time > v_start_time THEN
         v_delay_minutes := FLOOR(EXTRACT(EPOCH FROM (v_current_time - v_start_time)) / 60);
